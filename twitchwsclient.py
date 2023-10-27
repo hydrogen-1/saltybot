@@ -19,7 +19,7 @@ class TwitchWsClient():
     def handle_message(self, wsapp :websocket.WebSocketApp, msg: str) -> None:
         if(msg.startswith(":waifu4u!")):
             self.message_queue.put(msg)
-        elif(msg == "PING"):
+        elif(msg.startswith("PING")):
             print("PING")
             wsapp.send("PONG :tmi.twitch.tv")
 
