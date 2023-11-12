@@ -46,8 +46,8 @@ def main():
                 p1_elo = p1_elo + 32 * (outcome - p1_e)
                 p2_elo = p2_elo + 32 * ((1-outcome) - p2_e)
 
-                db.update_elo(p1, p1_elo)
-                db.update_elo(p2, p2_elo)
+                db.update_elo(p1, int(p1_elo))
+                db.update_elo(p2, int(p2_elo))
 
 
 
