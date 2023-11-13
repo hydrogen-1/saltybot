@@ -30,6 +30,8 @@ def main():
             else:
                 p2_id = db.get_player_id(player2)
             current_match = db.add_match(p1_id, p2_id)
+
+            print(f"{player1}: {db.get_elo(p1_id)}\n{player2}: {db.get_elo(p2_id)}")
             
         elif(msg.find("wins!") != -1):
             m = re.search(r"#saltybet :(.+) wins!", msg)
