@@ -1,0 +1,2 @@
+ALTER TABLE players
+ADD COLUMN num_fights INTEGER;
