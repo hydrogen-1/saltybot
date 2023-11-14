@@ -1,9 +1,9 @@
 import sqlite3
 
 def main():
-    connection = sqlite3.connect("players.db")
+    connection = sqlite3.connect("../players.db")
     cur = connection.cursor()
-    with open("migration/v1.sql", "r") as script:
+    with open("v1.sql", "r") as script:
         cur.executescript(script.read())
         cur.execute(
             """
