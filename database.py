@@ -14,7 +14,7 @@ class DatabaseClient:
 
     def add_player(self, name: str) -> int:
         cur = self.connection.cursor()
-        cur.execute("INSERT INTO players (name, elo) VALUES (?, 1000)", (name,))
+        cur.execute("INSERT INTO players (name, elo, num_fights) VALUES (?, 1000, 0)", (name,))
         id = cur.lastrowid
         self.connection.commit()
         cur.close()
@@ -60,14 +60,17 @@ class DatabaseClient:
         cur.execute("SELECT elo FROM players WHERE id = ?", (id,))
         elo = cur.fetchone()
         cur.close()
-        if(elo != None):
+        if(elo[0] != None):
             return elo[0]
         else:
             return 1000
 
     def update_elo(self, id: int, elo: int) -> None:
         cur = self.connection.cursor()
-        cur.execute("UPDATE players SET elo = ? WHERE id = ?", (elo, id, ))
+        cur.execute("SELECT num_fights FROM players WHERE id = ?", (id,))
+        count = cur.fetchone()
+        games = count[0] + 1
+        cur.execute("UPDATE players SET elo = ?, num_fights = ? WHERE id = ?", (elo, games, id, ))
         self.connection.commit()
         cur.close()
 
