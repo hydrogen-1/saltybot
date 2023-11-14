@@ -14,7 +14,7 @@ def main():
     messages = client.messages()
     current_match = 0
     for msg in messages:
-        print(msg)
+        # print(msg)
         if(msg.find("(exhibitions)") != -1):
             current_match = 0
             continue
