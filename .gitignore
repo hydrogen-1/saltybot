@@ -5,3 +5,4 @@ pyvenv.cfg
 login.json
 __pycache__/
 .vscode
+*.db
