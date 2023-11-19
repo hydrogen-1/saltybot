@@ -21,23 +21,13 @@ def main():
         elif(msg.find("Bets are OPEN") != -1):
             m = re.search(r"Bets are OPEN for (.+) vs (.+)!", msg)
             player1, player2 = m.groups()
-            unknown = False
-            if(not db.known_player(player1)):
-                p1_id = db.add_player(player1)
-                unknown = True
-            else:
-                p1_id = db.get_player_id(player1)
-            if(not db.known_player(player2)):
-                p2_id = db.add_player(player2)
-                unknown = True
-            else:
-                p2_id = db.get_player_id(player2)
+            p1_id, p1_games = db.known_player(player1)
+            p2_id, p2_games = db.known_player(player2)
             current_match = db.add_match(p1_id, p2_id)
-
-            if(not unknown):
+            if(p1_games >= 10 and p2_games >= 10):
                 print("--------------------------------")
                 print(f"{player1}: {db.get_elo(p1_id)}\n{player2}: {db.get_elo(p2_id)}")
-                print("--------------------------------")
+                print("--------------------------------\n")
             
         elif(msg.find("wins!") != -1):
             m = re.search(r"#saltybet :(.+) wins!", msg)

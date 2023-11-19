@@ -20,15 +20,15 @@ class DatabaseClient:
         cur.close()
         return id
 
-    def known_player(self, name: str) -> bool:
+    def known_player(self, name: str) -> tuple[int, int]:
         cur = self.connection.cursor()
-        cur.execute("SELECT id, name FROM players WHERE name = ?", (name,))
-        players = cur.fetchall()
+        cur.execute("SELECT id, num_fights FROM players WHERE name = ?", (name,))
+        players = cur.fetchone()
         cur.close()
-        for player in players:
-            if(name in player):
-                return True
-        return False
+        if(players is None):
+            id = self.add_player(name)
+            return id, 0
+        return players[0], players[1]
     
     def get_player_id(self, name: str) -> int:
         cur = self.connection.cursor()
