@@ -15,6 +15,12 @@ class TwitchWsClient():
         self.wsapp = websocket.WebSocketApp("wss://irc-ws.chat.twitch.tv:443", on_message=self.handle_message, on_open=self.handle_connect, on_ping=self.handle_ping, on_error=self.error)
         self.creds = credentials
         self.message_queue = Queue()
+        self.closing = False
+    
+    def close(self):
+        if(self.ws_thread):
+            self.wsapp.close()
+            self.ws_thread.join()
 
     def handle_message(self, wsapp :websocket.WebSocketApp, msg: str) -> None:
         if(msg.startswith(":waifu4u!")):

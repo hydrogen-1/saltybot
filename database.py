@@ -5,6 +5,9 @@ class DatabaseClient:
         self.connection = sqlite3.connect(path)
         self.create_tables()
 
+    def close(self):
+        self.connection.close()
+
     def create_tables(self) -> None:
         with open("db.sql", "r") as f:
             statements = f.read()

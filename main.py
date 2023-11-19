@@ -13,42 +13,48 @@ def main():
     db = DatabaseClient("players.db")
     messages = client.messages()
     current_match = 0
-    for msg in messages:
-        # print(msg)
-        if(msg.find("(exhibitions)") != -1):
-            current_match = 0
-            continue
-        elif(msg.find("Bets are OPEN") != -1):
-            m = re.search(r"Bets are OPEN for (.+) vs (.+)!", msg)
-            player1, player2 = m.groups()
-            p1_id, p1_games = db.known_player(player1)
-            p2_id, p2_games = db.known_player(player2)
-            current_match = db.add_match(p1_id, p2_id)
-            if(p1_games >= 10 and p2_games >= 10):
-                print("--------------------------------")
-                print(f"{player1}: {db.get_elo(p1_id)}\n{player2}: {db.get_elo(p2_id)}")
-                print("--------------------------------\n")
-            
-        elif(msg.find("wins!") != -1):
-            m = re.search(r"#saltybet :(.+) wins!", msg)
-            winner = m.groups()[0]
-            if(current_match != 0):
-                winner = db.add_winner(current_match, winner)
+    try:
+        for msg in messages:
+            # print(msg)
+            if(msg.find("(exhibitions)") != -1):
+                current_match = 0
+                continue
+            elif(msg.find("Bets are OPEN") != -1):
+                m = re.search(r"Bets are OPEN for (.+) vs (.+)!", msg)
+                player1, player2 = m.groups()
+                p1_id, p1_games = db.known_player(player1)
+                p2_id, p2_games = db.known_player(player2)
+                current_match = db.add_match(p1_id, p2_id)
+                if(p1_games >= 10 and p2_games >= 10):
+                    print("--------------------------------")
+                    print(f"{player1}: {db.get_elo(p1_id)}\n{player2}: {db.get_elo(p2_id)}")
+                    print("--------------------------------\n")
+                
+            elif(msg.find("wins!") != -1):
+                m = re.search(r"#saltybet :(.+) wins!", msg)
+                winner = m.groups()[0]
+                if(current_match != 0):
+                    winner = db.add_winner(current_match, winner)
 
 
-                p1, p2 = db.get_players_from_match(current_match)
-                outcome = 1 if winner == p1 else 0
-                p1_elo = db.get_elo(p1)
-                p2_elo = db.get_elo(p2)
+                    p1, p2 = db.get_players_from_match(current_match)
+                    outcome = 1 if winner == p1 else 0
+                    p1_elo = db.get_elo(p1)
+                    p2_elo = db.get_elo(p2)
 
-                p1_e = 1/(1+ pow(10,(p2_elo - p1_elo) / 400))
-                p2_e = 1- p1_e
+                    p1_e = 1/(1+ pow(10,(p2_elo - p1_elo) / 400))
+                    p2_e = 1- p1_e
 
-                p1_elo = p1_elo + 32 * (outcome - p1_e)
-                p2_elo = p2_elo + 32 * ((1-outcome) - p2_e)
+                    p1_elo = p1_elo + 32 * (outcome - p1_e)
+                    p2_elo = p2_elo + 32 * ((1-outcome) - p2_e)
 
-                db.update_elo(p1, int(p1_elo))
-                db.update_elo(p2, int(p2_elo))
+                    db.update_elo(p1, int(p1_elo))
+                    db.update_elo(p2, int(p2_elo))
+    except KeyboardInterrupt:
+        print("Quitting now")
+    finally:
+        db.close()
+        client.close()
 
 
 
