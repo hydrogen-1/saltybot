@@ -10,11 +10,11 @@ CREATE TABLE IF NOT EXISTS matches(
     p1 INTEGER NOT NULL,
     p2 INTEGER NOT NULL,
     winner INTEGER,
+    p1_pot INTEGER,
+    p2_pot INTEGER,
     FOREIGN KEY (p1) REFERENCES players(id),
     FOREIGN KEY (p2) REFERENCES players(id),
-    FOREIGN KEY (winner) REFERENCES players(id),
-    p1_pot INTEGER,
-    p2_pot INTEGER
+    FOREIGN KEY (winner) REFERENCES players(id)
 );
 
 PRAGMA foreign_keys = ON;
