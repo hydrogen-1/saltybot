@@ -83,6 +83,12 @@ class DatabaseClient:
         players = cur.fetchone()
         cur.close()
         return players
+    
+    def add_pot(self, id: int, p1_pot: int, p2_pot: int) -> None:
+        cur = self.connection.cursor()
+        cur.execute("UPDATE matches SET p1_pot = ?, p2_pot = ? WHERE id = ?", (p1_pot, p2_pot, id, ))
+        self.connection.commit()
+        cur.close()
 
     def __del__(self):
         self.connection.close()

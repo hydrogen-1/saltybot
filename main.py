@@ -11,6 +11,7 @@ def play(client: TwitchWsClient, db: DatabaseClient):
         if msg.find("(exhibitions)") != -1:
             current_match = 0
             continue
+
         elif msg.find("Bets are OPEN") != -1:
             m = re.search(r"Bets are OPEN for (.+) vs (.+)!", msg)
             player1, player2 = m.groups()
@@ -21,6 +22,12 @@ def play(client: TwitchWsClient, db: DatabaseClient):
                 print("--------------------------------")
                 print(f"{player1}: {db.get_elo(p1_id)}\n{player2}: {db.get_elo(p2_id)}")
                 print("--------------------------------\n")
+
+        elif msg.find("Bets are locked.") != -1:
+            m = re.search(r"\$([0-9,]*),.*\$([0-9,]*)", msg)
+            pot1, pot2 = [int(x.replace(",", "")) for x in m.groups()]
+            if(current_match != 0):
+                db.add_pot(current_match, pot1, pot2)
 
         elif msg.find("wins!") != -1:
             m = re.search(r"#saltybet :(.+) wins!", msg)
