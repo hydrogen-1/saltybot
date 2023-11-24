@@ -4,4 +4,4 @@ RUN pip install websocket-client
 WORKDIR /src
 COPY / /src
 
-ENTRYPOINT [ "python", "main.py" ]
+ENTRYPOINT [ "python", "-u", "main.py" ]
