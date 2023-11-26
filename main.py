@@ -1,13 +1,14 @@
-from twitchwsclient import TwitchWsClient, Credentials
 from database import DatabaseClient
 import json
 import re
+from twitchchat_wss import TwitchChatClient
 
 
-def play(client: TwitchWsClient, db: DatabaseClient):
+def play(client: TwitchChatClient, db: DatabaseClient):
     current_match = 0
-    messages = client.messages()
-    for msg in messages:
+    for msg in client.messages():
+        if(msg.find("waifu4u") == -1):
+            continue
         if msg.find("(exhibitions)") != -1:
             current_match = 0
             continue
@@ -53,9 +54,10 @@ def play(client: TwitchWsClient, db: DatabaseClient):
 def main():
     with open("login.json", "r") as credentials_file:
         data = json.load(credentials_file)
-        creds = Credentials(data.get("name"), data.get("oauth_token"))
-    print(f"Hello {creds.name}")
-    client = TwitchWsClient(creds)
+        username = data.get("name")
+        oauth_token = data.get("oauth_token")
+    print(f"Hello {username}")
+    client = TwitchChatClient(username, oauth_token, ["saltybet"])
     client.start()
     db = DatabaseClient("players.db")
     try:
