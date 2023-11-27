@@ -66,7 +66,7 @@ def main():
         print("Quitting now")
     finally:
         db.close()
-        client.close()
+        client.stop()
 
 
 if __name__ == "__main__":
